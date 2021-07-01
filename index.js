@@ -1,6 +1,7 @@
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const express = require("express");
+const path = require('path')
 const morgan = require("morgan");
 const app = express();
 const mongoose = require("mongoose");
@@ -25,7 +26,7 @@ app.use(morgan("tiny"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-User.exists({ userName: "admin" }).catch((err) => {
+User.exists({ userName: "admin" }).catch(() => {
   bcrypt.hash("admin", 10, (err, hash) => {
     const newUser = new User({
       firstName: "first",
@@ -49,7 +50,13 @@ const appointmentRoute = require("./api/routes/appointment");
 app.use(appointmentRoute);
 
 const PORT = process.env.PORT || 3001;
-
+if (process.env.NODE_ENV === "production") {
+  // Serve any static files
+  app.use(express.static(path.join(__dirname, "client/build"))); // Handle React routing, return all requests to React app
+  app.get("*", function (req, res) {
+    res.sendFile(path.join(__dirname, "client/build", "index.html"));
+  });
+}
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });

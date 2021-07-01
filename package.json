@@ -5,7 +5,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon index.js",
-    "build": "cd client && yarn build"
+    "build": "cd client && yarn build",
+    "heroku-postbuild": "cd client && yarn install && yarn install --only=dev --no-shrinkwrap && yarn build"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
