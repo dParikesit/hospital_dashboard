@@ -10,20 +10,20 @@ import Admin from "./pages/Admin";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
-  let status = {}
-  const now = new Date(Date.now())
-  if((typeof window !== "undefined")&& (localStorage.getItem('expiry')<now)){
-    status.role = ""
-    status.name = ""
-  } else{
-    status.role = localStorage.getItem("role");
-    status.name = localStorage.getItem("name");
-  }
+  const now = new Date(Date.now());
   const [role, setRole] = useState(
-    status.role ? status.role : ""
+    typeof window !== "undefined"
+      ? localStorage.getItem("expiry") > now
+        ? localStorage.getItem("role")
+        : ""
+      : ""
   );
   const [name, setName] = useState(
-    status.name ? status.name : ""
+    typeof window !== "undefined"
+      ? localStorage.getItem("expiry") > now
+        ? localStorage.getItem("name")
+        : ""
+      : ""
   );
 
   const addRole = (newRole, newName) => {
@@ -39,7 +39,6 @@ function App() {
     setName("");
   };
 
-  
   return (
     <AuthContext.Provider value={{ role, name, addRole, removeRole }}>
       <BrowserRouter>
