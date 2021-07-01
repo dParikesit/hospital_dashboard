@@ -9,7 +9,6 @@ function Home() {
   const Auth = useContext(AuthContext)
   const now = new Date(Date.now());
   localStorage.getItem('expiry') < now ? Auth.removeRole() : ""
-  console.log(Auth.role)
   function loginButton() {
     history.push("/login");
   }
