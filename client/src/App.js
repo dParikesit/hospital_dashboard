@@ -20,10 +20,10 @@ function App() {
     status.name = localStorage.getItem("name");
   }
   const [role, setRole] = useState(
-    status.role
+    status.role ? status.role : ""
   );
   const [name, setName] = useState(
-    status.name
+    status.name ? status.name : ""
   );
 
   const addRole = (newRole, newName) => {
