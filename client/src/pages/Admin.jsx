@@ -352,8 +352,12 @@ function Admin() {
             postCount += 1;
             return (
               <tr key={postCount}>
-                <th scope="row">{postCount + 1}</th>
-                <td>{post.doctor}</td>
+                <th scope="row">
+                  <p>{postCount + 1}</p>
+                </th>
+                <td>
+                  <p>{post.doctor}</p>
+                </td>
                 <td>
                   <p className="text-wrap">{post.description}</p>
                 </td>
