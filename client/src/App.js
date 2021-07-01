@@ -10,20 +10,11 @@ import Admin from "./pages/Admin";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
-  const now = new Date(Date.now());
   const [role, setRole] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("expiry") > now
-        ? localStorage.getItem("role")
-        : ""
-      : ""
+    typeof window !== "undefined" ? localStorage.getItem("role") : ""
   );
   const [name, setName] = useState(
-    typeof window !== "undefined"
-      ? localStorage.getItem("expiry") > now
-        ? localStorage.getItem("name")
-        : ""
-      : ""
+    typeof window !== "undefined" ? localStorage.getItem("name") : ""
   );
 
   const addRole = (newRole, newName) => {
