@@ -45,38 +45,23 @@ function Dashboard() {
   function cancelButton(e) {
     e.preventDefault();
     const id = e.target.id;
-    let { registrant } = posts[id];
-    const index = registrant.indexOf(Auth.name);
-    registrant.splice(index, 1);
-    const body = {
-      id: posts[id]._id,
-      doctor: posts[id].doctor,
-      description: posts[id].description,
-      registrant: registrant,
-    };
-    submitHandler(body);
+    submitHandler("DELETE", posts[id]._id, Auth.name);
   }
   function applyButton(e) {
     e.preventDefault();
     const id = e.target.id;
-    let { registrant } = posts[id];
-    registrant = [...registrant, Auth.name];
-    const body = {
-      id: posts[id]._id,
-      doctor: posts[id].doctor,
-      description: posts[id].description,
-      registrant: registrant,
-    };
-    submitHandler(body);
+    submitHandler("PUT", posts[id]._id, Auth.name);
   }
-  function submitHandler(body) {
-    fetch("/appointment", {
-      method: "PUT",
+  function submitHandler(mode, id, name) {
+    fetch("/appointment/" + name, {
+      method: mode,
       credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        id: id,
+      }),
     })
       .then((res) => res.json())
       .then((res) => {
@@ -96,7 +81,7 @@ function Dashboard() {
             <th scope="col">Doctor</th>
             <th scope="col">Description</th>
             <th scope="col">Registrant</th>
-            <th scope="col">Button</th>
+            <th scope="col"></th>
           </tr>
         </thead>
         <tbody>

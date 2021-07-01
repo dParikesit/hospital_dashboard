@@ -44,7 +44,7 @@ router.get("/appointment", authChecker, (req, res) => {
   });
 });
 
-router.put("/appointment", authChecker, (req, res) => {
+router.put("/appointment", authChecker, adminChecker, (req, res) => {
   let updated = {
     doctor: req.body.doctor,
     description: req.body.description,
@@ -61,6 +61,61 @@ router.put("/appointment", authChecker, (req, res) => {
       res.status(404).json({
         message: "error, appointment not found",
         error: err,
+      });
+    });
+});
+
+router.put("/appointment/:name", authChecker, (req, res) => {
+  Appointment.findOne({ _id: req.body.id })
+    .then((result) => {
+      let { doctor, description, registrant } = result;
+      registrant = [...registrant, req.params.name];
+      Appointment.updateOne(
+        { _id: req.body.id },
+        { doctor, description, registrant }
+      )
+        .then(() => {
+          res.status(200).json({
+            message: "success",
+          });
+        })
+        .catch(() => {
+          res.status(500).json({
+            message: "apply error",
+          });
+        });
+    })
+    .catch(() => {
+      res.status(404).json({
+        message: "appointment not found",
+      });
+    });
+});
+
+router.delete("/appointment/:name", authChecker, (req, res) => {
+  Appointment.findOne({ _id: req.body.id })
+    .then((result) => {
+      let { doctor, description, registrant } = result;
+      const index = registrant.indexOf(req.params.name);
+      registrant.splice(index, 1);
+      Appointment.updateOne(
+        { _id: req.body.id },
+        { doctor, description, registrant }
+      )
+        .then(() => {
+          res.status(200).json({
+            message: "success",
+          });
+        })
+        .catch(() => {
+          res.status(500).json({
+            message: "apply error",
+          });
+        });
+    })
+    .catch(() => {
+      res.status(404).json({
+        message: "appointment not found",
       });
     });
 });
