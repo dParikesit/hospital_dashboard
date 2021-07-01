@@ -7,6 +7,7 @@ import { useContext } from "react";
 function Home() {
   const history = useHistory();
   const Auth = useContext(AuthContext)
+  console.log(Auth.role)
   function loginButton() {
     history.push("/login");
   }
