@@ -35,6 +35,7 @@ function Dashboard() {
       });
   }, [update, Auth.name]);
 
+  // Page refresh trigger
   function changeUpdate() {
     if (update === true) {
       setUpdate(false);
@@ -42,16 +43,19 @@ function Dashboard() {
       setUpdate(true);
     }
   }
+  // Apointment cancel controller
   function cancelButton(e) {
     e.preventDefault();
     const id = e.target.id;
     submitHandler("DELETE", posts[id]._id, Auth.name);
   }
+  // Appointment apply controller
   function applyButton(e) {
     e.preventDefault();
     const id = e.target.id;
     submitHandler("PUT", posts[id]._id, Auth.name);
   }
+  // Submit function
   function submitHandler(mode, id, name) {
     fetch("/appointment/" + name, {
       method: mode,
@@ -72,6 +76,7 @@ function Dashboard() {
         alert(err.message);
       });
   }
+
   return (
     <div className="p-5 container-fluid">
       <table className="table table-hover">
@@ -85,6 +90,7 @@ function Dashboard() {
           </tr>
         </thead>
         <tbody>
+          {/* Map posts array to row */}
           {posts.map((post) => {
             postCount += 1;
             return (

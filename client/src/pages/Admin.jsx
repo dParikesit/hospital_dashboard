@@ -8,16 +8,16 @@ function Admin() {
   if (Auth.role !== "Administrator") {
     history.replace("/");
   }
-  const [isOpen, setIsOpen] = useState(false);
-  const [patientsList, setPatientsList] = useState([]);
-  const [count, setCount] = useState(1);
-  const [posts, setPosts] = useState([]);
-  const [postMode, setPostMode] = useState("POST");
-  const [registrant, setRegistrant] = useState([]);
-  const [doctor, setDoctor] = useState("");
-  const [description, setDescription] = useState("");
-  const [id, setId] = useState(0);
-  const [update, setUpdate] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Store appointment form
+  const [patientsList, setPatientsList] = useState([]); // Store patients list
+  const [count, setCount] = useState(1); // Store patients count
+  const [posts, setPosts] = useState([]); // Store posts
+  const [postMode, setPostMode] = useState("POST"); // Store http mode
+  const [registrant, setRegistrant] = useState([]); // Store registrant name
+  const [doctor, setDoctor] = useState(""); // Store doctor value for controlled form
+  const [description, setDescription] = useState(""); // Store desc value for controlled form
+  const [id, setId] = useState(0); // Store id
+  const [update, setUpdate] = useState(false); // Page refresh trigger
   let postCount = -1;
 
   useEffect(() => {
@@ -46,6 +46,7 @@ function Admin() {
       });
   }, [update]);
 
+  // Page refresh trigger
   function changeUpdate() {
     if (update === true) {
       setUpdate(false);
@@ -54,6 +55,7 @@ function Admin() {
     }
   }
 
+  // Patients list option creator
   const options = patientsList.map((patient) => {
     if (patient === "Patient name") {
       return (
@@ -69,6 +71,7 @@ function Admin() {
       );
     }
   });
+  // Patients list select creator
   const selectCreator = () => {
     let item = [];
     for (let i = 0; i < count; i++) {
@@ -201,6 +204,7 @@ function Admin() {
     setDescription("");
     setRegistrant([]);
   };
+  // Capture select value for controlled form
   const selectCapture = (e) => {
     if (registrant.includes(e.target.value)) {
       e.target.value = "Patient name";
@@ -212,23 +216,28 @@ function Admin() {
       setRegistrant([...registrant, e.target.value]);
     }
   };
+  // Function button to increase select form
   const addSelect = () => {
     if (registrant.length == count) {
       setCount(count + 1);
     }
   };
+  // Function button to decrease select form
   const removeSelect = (id) => {
     let temp = [...registrant];
     temp.splice(id, 1);
     setRegistrant(temp);
     setCount(count - 1);
   };
+  // Form controller
   const doctorHandler = (e) => {
     setDoctor(e.target.value);
   };
+  // Form controller
   const descriptionHandler = (e) => {
     setDescription(e.target.value);
   };
+  // Set form to edit mode
   function editButton(e) {
     e.preventDefault();
     const idPost = e.target.id;
@@ -240,6 +249,7 @@ function Admin() {
     setRegistrant(posts[idPost].registrant);
     setIsOpen(true);
   }
+  // Delete post
   function deleteButton(e) {
     e.preventDefault();
     const idPost = e.target.id;
@@ -262,7 +272,7 @@ function Admin() {
         console.log(err);
       });
   }
-
+  // Reset form value
   function formViewHandler() {
     if (isOpen == false) {
       setIsOpen(true);

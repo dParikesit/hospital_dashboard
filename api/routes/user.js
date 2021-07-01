@@ -6,7 +6,7 @@ const authChecker = require("../middleware/auth-checker");
 const adminChecker = require("../middleware/admin-checker");
 const User = require("../models/user");
 
-// User
+// User Registration with password encryption
 router.post("/user/register", (req, res) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
     if (err) {
@@ -46,6 +46,7 @@ router.post("/user/register", (req, res) => {
   });
 });
 
+// User Login and JWT storing in httpOnly cookie
 router.post("/user/login", (req, res) => {
   User.find({ userName: req.body.userName }).then((user) => {
     if (user.length < 1) {
@@ -69,6 +70,7 @@ router.post("/user/login", (req, res) => {
           expiresIn: "3d",
         }
       );
+      // Set cookie expiration date 3 day from now
       const expiry = new Date(Date.now() + 3 * 24 * 60 * 60000);
       res
         .cookie("token", token, {
@@ -89,6 +91,7 @@ router.post("/user/login", (req, res) => {
   });
 });
 
+// User Logout and cookie reset
 router.post("/user/logout", authChecker, (req, res) => {
   res
     .clearCookie("token", {
@@ -102,6 +105,7 @@ router.post("/user/logout", authChecker, (req, res) => {
     });
 });
 
+// User full name data for appointment creation by admin
 router.get("/user", authChecker, adminChecker, (req, res) => {
   User.find({ role: "Patient" })
     .then((result) => {

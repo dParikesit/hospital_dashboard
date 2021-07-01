@@ -7,7 +7,7 @@ import logo from "../assets/hospital-svgrepo-com.svg";
 function Navbar() {
   const history = useHistory();
   const Auth = useContext(AuthContext);
-  const [isCollapse, setIsCollapse] = useState(true)
+  const [isCollapse, setIsCollapse] = useState(true) // Set navbar collapse state
 
   function toggler (){
     if(isCollapse){
@@ -16,10 +16,10 @@ function Navbar() {
       setIsCollapse(true)
     }
   }
+
   function loginButton() {
     history.push("/login");
   }
-
   function registerButton() {
     history.push("/register");
   }
@@ -43,7 +43,8 @@ function Navbar() {
       });
     history.push("/login");
   }
-
+  
+  // Function to generate navbar links and buttons according to auth state
   const buttons = () => {
     if (Auth.role == "Patient") {
       return (

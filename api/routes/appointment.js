@@ -5,6 +5,7 @@ const adminChecker = require("../middleware/admin-checker");
 
 const Appointment = require("../models/appointment");
 
+// Enable appointment creation for admin
 router.post("/appointment", authChecker, adminChecker, (req, res) => {
   let newPost = new Appointment({
     doctor: req.body.doctor,
@@ -28,6 +29,7 @@ router.post("/appointment", authChecker, adminChecker, (req, res) => {
     });
 });
 
+// Enable appointment list serve for everyone
 router.get("/appointment", authChecker, (req, res) => {
   Appointment.find().then((result) => {
     if (result.length < 1) {
@@ -44,6 +46,7 @@ router.get("/appointment", authChecker, (req, res) => {
   });
 });
 
+// Enable appointment edit for admin
 router.put("/appointment", authChecker, adminChecker, (req, res) => {
   let updated = {
     doctor: req.body.doctor,
@@ -65,6 +68,24 @@ router.put("/appointment", authChecker, adminChecker, (req, res) => {
     });
 });
 
+// Enable appointment deletion for admin
+router.delete("/appointment", authChecker, adminChecker, (req, res) => {
+  Appointment.deleteOne({ _id: req.body.id })
+    .then((result) => {
+      res.status(200).json({
+        message: "Delete successful",
+        result: result,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: "Delete error",
+        error: err,
+      });
+    });
+});
+
+// Enable appointment apply for patient
 router.put("/appointment/:name", authChecker, (req, res) => {
   Appointment.findOne({ _id: req.body.id })
     .then((result) => {
@@ -92,6 +113,7 @@ router.put("/appointment/:name", authChecker, (req, res) => {
     });
 });
 
+// Enable appointment cancelling for patient
 router.delete("/appointment/:name", authChecker, (req, res) => {
   Appointment.findOne({ _id: req.body.id })
     .then((result) => {
@@ -120,19 +142,4 @@ router.delete("/appointment/:name", authChecker, (req, res) => {
     });
 });
 
-router.delete("/appointment", authChecker, adminChecker, (req, res) => {
-  Appointment.deleteOne({ _id: req.body.id })
-    .then((result) => {
-      res.status(200).json({
-        message: "Delete successful",
-        result: result,
-      });
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: "Delete error",
-        error: err,
-      });
-    });
-});
 module.exports = router;

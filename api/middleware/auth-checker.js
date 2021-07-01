@@ -1,6 +1,7 @@
 require("dotenv").config();
 const jwt = require("jsonwebtoken");
 
+//Middleware to check if user is logged In
 module.exports = (req, res, next) => {
   const cookie = req.signedCookies;
   try {
