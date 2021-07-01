@@ -1,8 +1,15 @@
-import { Link, Redirect } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
 
 import logo from "../assets/hospital-svgrepo-com.svg";
 
 function Register() {
+  const history = useHistory()
+  const Auth = useContext(AuthContext)
+  if(Auth.role){
+    history.replace("/")
+  }
   const submitHandler = (e) => {
     e.preventDefault();
     let userDetail = {}
@@ -24,7 +31,7 @@ function Register() {
       .then((res) => res.json())
       .then((res) => {
         console.log(res.message);
-        <Redirect to="/login" />
+        history.push("/login")
       })
       .catch((error) => console.log(error));
   };

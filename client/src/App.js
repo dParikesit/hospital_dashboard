@@ -6,21 +6,42 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import Admin from "./pages/Admin";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
+  let status = {}
+  const now = new Date(Date.now())
+  if((typeof window !== "undefined")&& (localStorage.getItem('expiry')<now)){
+    status.role = ""
+    status.name = ""
+  } else{
+    status.role = localStorage.getItem("role");
+    status.name = localStorage.getItem("name");
+  }
   const [role, setRole] = useState(
-    typeof window !== "undefined" ? localStorage.getItem("role") : ""
+    status.role
   );
-  const addRole = (newRole) => {
+  const [name, setName] = useState(
+    status.name
+  );
+
+  const addRole = (newRole, newName) => {
     localStorage.setItem("role", newRole);
+    localStorage.setItem("name", newName);
     setRole(newRole);
+    setName(newName);
   };
   const removeRole = () => {
     localStorage.removeItem("role");
+    localStorage.removeItem("name");
     setRole("");
+    setName("");
   };
+
+  
   return (
-    <AuthContext.Provider value={{ role, addRole, removeRole }}>
+    <AuthContext.Provider value={{ role, name, addRole, removeRole }}>
       <BrowserRouter>
         <Navbar />
         <Switch>
@@ -32,6 +53,12 @@ function App() {
           </Route>
           <Route path="/login">
             <Login />
+          </Route>
+          <Route path="/admin">
+            <Admin />
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard />
           </Route>
         </Switch>
       </BrowserRouter>

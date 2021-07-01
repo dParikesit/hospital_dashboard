@@ -1,11 +1,15 @@
-import { Link, Redirect } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
 
 import logo from "../assets/hospital-svgrepo-com.svg";
 
 function Login() {
-  let Auth = useContext(AuthContext)
+  const Auth = useContext(AuthContext)
+  const history = useHistory()
+  if(Auth.role){
+    history.replace("/")
+  }
   let userDetail = {
     userName: "",
     password: "",
@@ -23,8 +27,7 @@ function Login() {
 
     fetch("/user/login", {
       method: "POST",
-      mode: "cors",
-      credentials: "include",
+      credentials: "same-origin",
       headers: {
         "Content-Type": "application/json",
       },
@@ -32,15 +35,14 @@ function Login() {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res.message);
-        Auth.addRole(res.role);
-        console.log(Auth.role);
-        /* if (Auth.role === "User") {
-          Router.push("/dashboard");
-        } else if (Auth.role === "Admin") {
-          Router.push("/admin/berita");
-        } */
-        <Redirect to="/" />
+        Auth.addRole(res.role, res.name);
+        localStorage.setItem('expiry', res.expiry)
+        if (Auth.role === "Patient") {
+          history.push("/dashboard")
+        } else if (Auth.role === "Administrator") {
+          history.push("/admin")
+        }
+        
       });
   };
 

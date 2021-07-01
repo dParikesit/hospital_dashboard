@@ -1,19 +1,14 @@
 require("dotenv").config();
 const router = require("express").Router();
-const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const authChecker = require("../middleware/auth-checker");
 const adminChecker = require("../middleware/admin-checker");
 const User = require("../models/user");
 
-// router.get("/admin/dashboard/:id", adminChecker, (req,res) => {
-// });
-
 // User
 router.post("/user/register", (req, res) => {
   bcrypt.hash(req.body.password, 10, (err, hash) => {
-    console.log(req.body.password);
     if (err) {
       res.status(500).json({
         message: "Hashing error",
@@ -32,7 +27,7 @@ router.post("/user/register", (req, res) => {
         .then((result) => {
           res.status(200).json({
             message: "User saved!",
-            result: result
+            result: result,
           });
         })
         .catch((err) => {
@@ -74,9 +69,10 @@ router.post("/user/login", (req, res) => {
           expiresIn: "3d",
         }
       );
+      const expiry = new Date(Date.now() + 3 * 24 * 60 * 60000);
       res
         .cookie("token", token, {
-          expires: new Date(Date.now() + 3 * 24 * 60 * 60000),
+          expires: expiry,
           httpOnly: true,
           signed: true,
           sameSite: "strict",
@@ -86,6 +82,8 @@ router.post("/user/login", (req, res) => {
         .json({
           message: "Login successful",
           role: user[0].role,
+          name: user[0].firstName + " " + user[0].lastName,
+          expiry: expiry
         });
     });
   });
@@ -101,6 +99,19 @@ router.post("/user/logout", authChecker, (req, res) => {
     .status(200)
     .json({
       message: "Logout successful",
+    });
+});
+
+router.get("/user", authChecker, adminChecker, (req, res) => {
+  User.find({ role: "Patient" })
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((err) => {
+      res.status(404).json({
+        message: "Patient not found",
+        error: err,
+      });
     });
 });
 

@@ -1,5 +1,5 @@
-import { useContext } from "react";
-import { useHistory, Redirect } from "react-router-dom";
+import { useContext, useState } from "react";
+import { useHistory, NavLink } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 
 import logo from "../assets/hospital-svgrepo-com.svg";
@@ -7,7 +7,15 @@ import logo from "../assets/hospital-svgrepo-com.svg";
 function Navbar() {
   const history = useHistory();
   const Auth = useContext(AuthContext);
+  const [isCollapse, setIsCollapse] = useState(true)
 
+  function toggler (){
+    if(isCollapse){
+      setIsCollapse(false)
+    } else{
+      setIsCollapse(true)
+    }
+  }
   function loginButton() {
     history.push("/login");
   }
@@ -27,19 +35,94 @@ function Navbar() {
       body: "",
     })
       .then((res) => res.json())
-      .then((res) => {
+      .then(() => {
         Auth.removeRole()
-        console.log(res);
       })
       .catch((err) => {
         console.log(err);
       });
-    <Redirect to="/" />
+    history.push("/login");
   }
-  
+
+  const buttons = () => {
+    if (Auth.role == "Patient") {
+      return (
+        <div
+          className={`ml-auto navbar-collapse ${isCollapse ? "collapse" : ""}`}
+          id="navbarSupportedContent"
+        >
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <NavLink
+                to="/dashboard"
+                className="nav-link"
+                activeClassName="nav-link active"
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          </ul>
+          <button
+            className="btn btn-outline-danger me-2"
+            type="button"
+            onClick={logoutHandler}
+          >
+            Sign Out
+          </button>
+        </div>
+      );
+    } else if (Auth.role == "Administrator") {
+      return (
+        <div className={`ml-auto navbar-collapse ${isCollapse ? 'collapse' : ''}`} id="navbarSupportedContent">
+          <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+            <li className="nav-item">
+              <NavLink
+                to="/admin"
+                className="nav-link"
+                activeClassName="nav-link active"
+              >
+                Dashboard
+              </NavLink>
+            </li>
+          </ul>
+          <button
+            className="btn btn-outline-danger me-2"
+            type="button"
+            onClick={logoutHandler}
+          >
+            Sign Out
+          </button>
+        </div>
+      );
+    } else {
+      return (
+        <div
+          className={`ml-auto navbar-collapse ${isCollapse ? "collapse" : ""}`}
+          id="navbarSupportedContent"
+        >
+          <ul className="ms-auto">
+          </ul>
+          <button
+            className="btn btn-outline-success me-2"
+            type="button"
+            onClick={loginButton}
+          >
+            Login
+          </button>
+          <button
+            className="btn btn-outline-success me-2"
+            type="button"
+            onClick={registerButton}
+          >
+            Sign Up
+          </button>
+        </div>
+      );
+    }
+  }
   return (
     <header>
-      <nav className="navbar navbar-light bg-light">
+      <nav className="navbar navbar-expand-lg navbar-light bg-light ml-auto">
         <div className="container-fluid">
           <a className="navbar-brand" href="/">
             <img
@@ -51,34 +134,17 @@ function Navbar() {
             />
             Compfest Hospital
           </a>
-          {Auth.role !== 'Administrator' ? (
-            <div>
-              <button
-                className="btn btn-outline-success me-2"
-                type="button"
-                onClick={loginButton}
-              >
-                Login
-              </button>
-              <button
-                className="btn btn-outline-success me-2"
-                type="button"
-                onClick={registerButton}
-              >
-                Sign Up
-              </button>
-            </div>
-          ) : (
-            <div>
-              <button
-                className="btn btn-outline-success me-2"
-                type="button"
-                onClick={logoutHandler}
-              >
-                Sign Out
-              </button>
-            </div>
-          )}
+          <button
+            className="navbar-toggler"
+            type="button"
+            onClick={toggler}
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span className="navbar-toggler-icon"></span>
+          </button>
+          {buttons()}
         </div>
       </nav>
     </header>

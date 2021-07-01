@@ -1,18 +1,34 @@
+
 import image from "../assets/medical.svg";
+import { useHistory } from "react-router-dom";
+import { AuthContext } from "../components/AuthContext";
+import { useContext } from "react";
 
 function Home() {
+  const history = useHistory();
+  const Auth = useContext(AuthContext)
+  function loginButton() {
+    history.push("/login");
+  }
   return (
     <main>
-      <div className="d-flex align-items-center mw-100">
-        <div className="container-fluid p-5 h1 d-flex flex-column align-items-center h-50 w-50">
+      <div className="d-flex align-items-center justify-content-start">
+        <div className="container-fluid p-5 h1 d-flex flex-column align-items-center h-50 w-100 text-center">
           <p>Selamat datang di Compfest Hospital</p>
-          <p>Silahkan login untuk mengakses fitur situs</p>
-          <button className="btn btn-outline-success me-2 btn-lg" type="button">
-            Login
-          </button>
+          {Auth.role ? (
+            ""
+          ) : (
+            <button
+              className="btn btn-outline-success me-2 btn-lg"
+              type="button"
+              onClick={loginButton}
+            >
+              Login
+            </button>
+          )}
         </div>
-        <div className="w-50">
-          <img src={image} alt="Freepik Medical Image" className="w-100" />
+        <div className="w-100 d-none d-md-block">
+          <img src={image} alt="Freepik Medical Image" className="w-100"/>
           <a href="https://www.freepik.com/free-photos-vectors/medical"></a>
         </div>
       </div>
